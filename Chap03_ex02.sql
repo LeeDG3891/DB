@@ -1,10 +1,23 @@
 select * from book;
 
-// 2¹ø
-select count(*) from book;  //(1) ¸¶´ç¼­Á¡ µµ¼­ÀÇ ÃÑ¼ö
-select count(distinct publisher) from book; //(2) ¸¶´ç¼­Á¡¿¡ µµ¼­¸¦  Ãâ°íÇÏ´Â ÃâÆÇ»çÀÇ ÃÑ¼ö
-select name, address from customer; //(3) ¸ðµç °í°´ÀÇ ÀÌ¸§, ÁÖ¼Ò
-select * from orders where orderdate between '2020-07-04' and '2020-07-07'; //(4) 2020³â7¿ù4ÀÏ~7¿ù7ÀÏ »çÀÌ¿¡ ÁÖ¹®¹ÞÀº µµ¼­ÀÇ ÁÖ¹®¹øÈ£
-select * from orders where orderdate not between '2020-07-04' and '2020-07-09'; //(5) 2020³â7¿ù4ÀÏ~7¿ù9ÀÏ »çÀÌ¿¡ ÁÖ¹®¹ÞÀº µµ¼­¸¦ Á¦¿ÜÇÑ µµ¼­ÀÇ ÁÖ¹®¹øÈ£
-select name, address from customer where name like '±è%';    //(6) ¼ºÀÌ '±è'¾¾ÀÎ °í°´ÀÇ ÀÌ¸§°ú ÁÖ¼Ò
-select name, address from customer where name like '±è%¾Æ';   //(7) ¼ºÀÌ '±è'¾¾ÀÌ°í ÀÌ¸§ÀÌ '¾Æ'·Î ³¡³ª´Â °í°´ÀÇ ÀÌ¸§°ú ÁÖ¼Ò
+// 2ë²ˆ
+select count(*) from book;  //(1) ë§ˆë‹¹ì„œì  ë„ì„œì˜ ì´ìˆ˜
+select count(distinct publisher) from book; //(2) ë§ˆë‹¹ì„œì ì— ë„ì„œë¥¼  ì¶œê³ í•˜ëŠ” ì¶œíŒì‚¬ì˜ ì´ìˆ˜
+select name, address from customer; //(3) ëª¨ë“  ê³ ê°ì˜ ì´ë¦„, ì£¼ì†Œ
+select * from orders where orderdate between '2020-07-04' and '2020-07-07'; //(4) 2020ë…„7ì›”4ì¼~7ì›”7ì¼ ì‚¬ì´ì— ì£¼ë¬¸ë°›ì€ ë„ì„œì˜ ì£¼ë¬¸ë²ˆí˜¸
+select * from orders where orderdate not between '2020-07-04' and '2020-07-09'; //(5) 2020ë…„7ì›”4ì¼~7ì›”9ì¼ ì‚¬ì´ì— ì£¼ë¬¸ë°›ì€ ë„ì„œë¥¼ ì œì™¸í•œ ë„ì„œì˜ ì£¼ë¬¸ë²ˆí˜¸
+select name, address from customer where name like 'ê¹€%';    //(6) ì„±ì´ 'ê¹€'ì”¨ì¸ ê³ ê°ì˜ ì´ë¦„ê³¼ ì£¼ì†Œ
+select name, address from customer where name like 'ê¹€%ì•„';   //(7) ì„±ì´ 'ê¹€'ì”¨ì´ê³  ì´ë¦„ì´ 'ì•„'ë¡œ ëë‚˜ëŠ” ê³ ê°ì˜ ì´ë¦„ê³¼ ì£¼ì†Œ
+
+// ch3. ex2-7
+select name from customer where name not in (select name from customer, orders where customer.custid=orders.custid);
+// 2-9 ì£¼ë¬¸ ê¸ˆì•¡ì˜ ì´ì•¡ê³¼ ì£¼ë¬¸ì˜ í‰ê·  ê¸ˆì•¡
+select sum(saleprice), avg(saleprice) from orders;
+// 2-10 ê³ ê°ì˜ ì´ë¦„ê³¼ ê³ ê°ë³„ êµ¬ë§¤ì•¡
+select name, sum(saleprice) from orders, customer where orders.custid=customer.custid group by name;
+// 2-11 ê³ ê°ì˜ ì´ë¦„ê³¼ ê³ ê°ì´ êµ¬ë§¤í•œ ë„ì„œ ëª©ë¡
+select name, bookname from book, orders, customer where orders.bookid=book.bookid and orders.custid=customer.custid;
+// 2-12 ë„ì„œì˜ ê°€ê²©(book í…Œì´ë¸”)ê³¼ íŒë§¤ê°€ê²©(orders í…Œì´ë¸”)ì˜ ì°¨ì´ê°€ ê°€ìž¥ ë§Žì€ ì£¼ë¬¸
+select * from book, orders where book.bookid=orders.bookid and price-saleprice=(select max(price-saleprice) from book, orders where book.bookid=orders.bookid);
+// 2-13 ë„ì„œì˜ íŒë§¤ì•¡ í‰ê· ë³´ë‹¤ ìžì‹ ì˜ êµ¬ë§¤ì•¡ í‰ê· ì´ ë” ë†’ì€ ê³ ê°ì˜ ì´ë¦„
+select name from customer, orders where customer.custid=orders.custid group by name having avg(saleprice) > (select avg(saleprice) from orders);
