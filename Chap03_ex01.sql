@@ -1,8 +1,18 @@
 select * from book;
 
-// 1¹ø
-select bookname from book where bookid=1;   //(1) µµ¼­¹øÈ£°¡ 1ÀÎ µµ¼­ÀÇ ÀÌ¸§
-select bookname from book where price>=20000;   //(2) °¡°İÀÌ 2¸¸¿ø ÀÌ»óÀÎ µµ¼­ÀÇ ÀÌ¸§
-select sum(saleprice) from orders where custid=1;   //(3) ¹ÚÁö¼ºÀÇ ÃÑ ±¸¸Å¾×
-select sum(saleprice) from customer orders where customer.custid=orders.custid and customer.name like '¹ÚÁö¼º';    //(3-2) ¹ÚÁö¼ºÀÇ ÃÑ ±¸¸Å¾×2
+// 1ë²ˆ
+select bookname from book where bookid=1;   //(1) ë„ì„œë²ˆí˜¸ê°€ 1ì¸ ë„ì„œì˜ ì´ë¦„
+select bookname from book where price>=20000;   //(2) ê°€ê²©ì´ 2ë§Œì› ì´ìƒì¸ ë„ì„œì˜ ì´ë¦„
+select sum(saleprice) from orders where custid=1;   //(3) ë°•ì§€ì„±ì˜ ì´ êµ¬ë§¤ì•¡
+select sum(saleprice) from customer orders where customer.custid=orders.custid and customer.name like 'ë°•ì§€ì„±';    //(3-2) ë°•ì§€ì„±ì˜ ì´ êµ¬ë§¤ì•¡2
 select count(*) from orders where custid=1; //(4)
+
+// 1-5 ë°•ì§€ì„±ì´ êµ¬ë§¤í•œ ë„ì„œì˜ ì¶œíŒì‚¬ ìˆ˜
+select count(distinct publisher) from customer, orders, book
+where (customer.custid=orders.custid) and (book.bookid=orders.bookid) and (customer.name like 'ë°•ì§€ì„±');
+// 1-6 ë°•ì§€ì„±ì´ êµ¬ë§¤í•œ ë„ì„œì˜ ì´ë¦„, ê°€ê²©, ì •ê°€ì™€ íŒë§¤ê°€ê²©ì˜ ì°¨ì´
+select bookname, price, price-saleprice from customer, orders, book
+where (customer.custid=orders.custid) and (book.bookid=orders.bookid) and (customer.name like 'ë°•ì§€ì„±');
+// 1-7 ë°•ì§€ì„±ì´ êµ¬ë§¤í•˜ì§€ ì•Šì€ ë„ì„œì˜ ì´ë¦„
+select bookname from book, orders, customer minus select bookname from book, orders, customer
+where (customer.custid=orders.custid) and (book.bookid=orders.bookid) and (customer.name like 'ë°•ì§€ì„±');
